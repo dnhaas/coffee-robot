@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Example usage of the ODrive python library to monitor and control ODrive devices
+MTA - Coffee robot V1 - Test program
 """
 
 from __future__ import print_function
@@ -19,6 +19,25 @@ my_drive = odrive.find_any()
 
 # To read a value, simply read the property
 print("Odrive found, Shit is running at " + str(my_drive.vbus_voltage) + "V")
+
+my_drive.axis0.controller.config.pos_gain = 1
+print("axis 0 pos_gain is " + str(my_drive.axis0.controller.config.pos_gain))
+my_drive.axis1.controller.config.pos_gain = 1
+print("axis 1 pos_gain is " + str(my_drive.axis1.controller.config.pos_gain))
+
+my_drive.axis0.controller.config.vel_gain = 0.25 #0.02
+print("axis 0 vel_gain is " + str(my_drive.axis0.controller.config.vel_gain))
+my_drive.axis1.controller.config.vel_gain = 0.25 #0.02
+print("axis 1 vel_gain is " + str(my_drive.axis1.controller.config.vel_gain))
+
+my_drive.axis0.controller.config.vel_integrator_gain = 1
+print("axis 0 vel_integrator_gain is " + str(my_drive.axis0.controller.config.vel_integrator_gain))
+my_drive.axis1.controller.config.vel_integrator_gain = 1
+print("axis 1 vel_integrator_gain is " + str(my_drive.axis1.controller.config.vel_integrator_gain))
+
+
+my_drive.axis0.controller.config.vel_limit = 1000
+my_drive.axis1.controller.config.vel_limit = 1000
 
 
 
@@ -166,7 +185,7 @@ try:
                         raise RobotStopException()
                     if 'select'in joystick.presses:
                         # To read a value, simply read the property
-                        print("Odrive online, running at" + str(my_drive.vbus_voltage) + "V")
+                        print("Odrive online, running at " + str(my_drive.vbus_voltage) + "V")
                     if 'l1'in joystick.presses:
                         print("######## Axis 0 MOTOR settings ######")
                         print(str(my_drive.axis0.motor))
