@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MTA - Coffee robot V1 - Test program
+Example usage of the ODrive python library to monitor and control ODrive devices
 """
 
 from __future__ import print_function
@@ -12,34 +12,41 @@ from odrive.enums import *
 import time
 import math
 
-# Find a connected ODrive (this will block until you connect one)
-print("finding an odrive...")
-my_drive = odrive.find_any()
+from fibre import protocol
 
 
-# To read a value, simply read the property
-print("Odrive found, Shit is running at " + str(my_drive.vbus_voltage) + "V")
-
-my_drive.axis0.controller.config.pos_gain = 1
-print("axis 0 pos_gain is " + str(my_drive.axis0.controller.config.pos_gain))
-my_drive.axis1.controller.config.pos_gain = 1
-print("axis 1 pos_gain is " + str(my_drive.axis1.controller.config.pos_gain))
-
-my_drive.axis0.controller.config.vel_gain = 0.25 #0.02
-print("axis 0 vel_gain is " + str(my_drive.axis0.controller.config.vel_gain))
-my_drive.axis1.controller.config.vel_gain = 0.25 #0.02
-print("axis 1 vel_gain is " + str(my_drive.axis1.controller.config.vel_gain))
-
-my_drive.axis0.controller.config.vel_integrator_gain = 1
-print("axis 0 vel_integrator_gain is " + str(my_drive.axis0.controller.config.vel_integrator_gain))
-my_drive.axis1.controller.config.vel_integrator_gain = 1
-print("axis 1 vel_integrator_gain is " + str(my_drive.axis1.controller.config.vel_integrator_gain))
 
 
-my_drive.axis0.controller.config.vel_limit = 1000
-my_drive.axis1.controller.config.vel_limit = 1000
+def init():
+    # Find a connected ODrive (this will block until you connect one)
+    print("finding an odrive...")
+    global my_drive
+    my_drive = odrive.find_any()
 
 
+    # To read a value, simply read the property
+    print("Odrive found, Shit is running at " + str(my_drive.vbus_voltage) + "V")
+
+    my_drive.axis0.controller.config.pos_gain = 1
+    print("axis 0 pos_gain is " + str(my_drive.axis0.controller.config.pos_gain))
+    my_drive.axis1.controller.config.pos_gain = 1
+    print("axis 1 pos_gain is " + str(my_drive.axis1.controller.config.pos_gain))
+
+    my_drive.axis0.controller.config.vel_gain = 0.25 #0.02
+    print("axis 0 vel_gain is " + str(my_drive.axis0.controller.config.vel_gain))
+    my_drive.axis1.controller.config.vel_gain = 0.25 #0.02
+    print("axis 1 vel_gain is " + str(my_drive.axis1.controller.config.vel_gain))
+
+    my_drive.axis0.controller.config.vel_integrator_gain = 1
+    print("axis 0 vel_integrator_gain is " + str(my_drive.axis0.controller.config.vel_integrator_gain))
+    my_drive.axis1.controller.config.vel_integrator_gain = 1
+    print("axis 1 vel_integrator_gain is " + str(my_drive.axis1.controller.config.vel_integrator_gain))
+
+
+    my_drive.axis0.controller.config.vel_limit = 1000
+    my_drive.axis1.controller.config.vel_limit = 1000
+
+init()
 
 try:
     # Attempt to import the GPIO Zero library. If this fails, because we're running somewhere
@@ -89,8 +96,6 @@ try:
         my_drive.axis0.controller.vel_setpoint = (power_left)
         my_drive.axis1.controller.vel_setpoint = (power_right)
 
-
-
     def stop_motors():
         # Turn both motors off
         my_drive.axis0.controller.vel_setpoint = 0
@@ -100,14 +105,12 @@ except ImportError:
 
     print('GPIO Zero not found, using dummy functions.')
 
-
     def set_speeds(power_left, power_right):
         """
         No motor hat - print what we would have sent to it if we'd had one.
         """
         print('DEBUG Left: {}, Right: {}'.format(power_left, power_right))
         sleep(0.3)
-
 
     def stop_motors():
         """
@@ -131,7 +134,7 @@ class RobotStopException(Exception):
     pass
 
 
-def mixer(yaw, throttle, max_power=10000):
+def mixer(yaw, throttle, max_power=20000):
     """
     Mix a pair of joystick axes, returning a pair of wheel speeds. This is where the mapping from
     joystick positions to wheel powers is defined, so any changes to how the robot drives should
@@ -186,6 +189,11 @@ try:
                     if 'select'in joystick.presses:
                         # To read a value, simply read the property
                         print("Odrive online, running at " + str(my_drive.vbus_voltage) + "V")
+                    if 'start' in joystick.presses:
+                        try:
+                            my_drive.reboot()
+                        except protocol.ChannelBrokenException:
+                            init()
                     if 'l1'in joystick.presses:
                         print("######## Axis 0 MOTOR settings ######")
                         print(str(my_drive.axis0.motor))
