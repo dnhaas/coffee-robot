@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Example usage of the ODrive python library to monitor and control ODrive devices
+MTA Coffee-robot drive with joystick program 
 """
 
 from __future__ import print_function
