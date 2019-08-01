@@ -7,7 +7,7 @@ import time
 import datetime
 import subprocess
 
-I2C_ADDR  = 0x3F # I2C device address
+I2C_ADDR  = 0x27 # I2C device address
 LCD_WIDTH = 20   # Maximum characters per line
 
 # Define some device constants
@@ -32,12 +32,14 @@ bus = smbus.SMBus(1) # Rev 2 Pi uses 1
 def run_cmd(cmd):
     return subprocess.check_output(cmd, shell=True).decode('utf-8')
 
-def get_odrive_voltage():
-    val = ("Odrive online, running at" + str(my_drive.vbus_voltage) + "V")
+def get_my_ipwlan():
+    val = run_cmd("/sbin/ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'")[:-1]
+    if val == "":
+        val = "No connection!"
     return val
 
-def get_odrive_error():
-    val = dump_errors(odrv0)
+def get_my_ipeth():
+    val = run_cmd("/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'")[:-1]
     if val == "":
         val = "No connection"
     return val
@@ -86,10 +88,10 @@ def main():
 
     now = datetime.datetime.now()
 
-    lcd_string("Current Status",LCD_LINE_1)
-    lcd_string( str(now.day)+'/'+str(now.month)+'/'+str(now.year)+' '+str(now.hour)+':'+str(now.minute),LCD_LINE_2)
-    lcd_string(get_odrive_voltage(),LCD_LINE_3)
-    lcd_string(get_odrive_error(),LCD_LINE_4)
+    lcd_string("MTA Coffee-robot",LCD_LINE_1)
+    lcd_string("Battery = ??V",LCD_LINE_2)
+    lcd_string("Odrive: No errors",LCD_LINE_3)
+    lcd_string("Pozyx: X 100 Y 100",LCD_LINE_4)
     time.sleep(60)
 
 if __name__ == '__main__':
