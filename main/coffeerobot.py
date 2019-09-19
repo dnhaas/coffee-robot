@@ -11,7 +11,6 @@ import odrive
 from odrive.enums import *
 import time
 import math
-
 from fibre import protocol
 
 
@@ -43,8 +42,8 @@ def init():
     print("axis 1 vel_integrator_gain is " + str(my_drive.axis1.controller.config.vel_integrator_gain))
 
 
-    my_drive.axis0.controller.config.vel_limit = 1000
-    my_drive.axis1.controller.config.vel_limit = 1000
+    my_drive.axis0.controller.config.vel_limit = 500
+    my_drive.axis1.controller.config.vel_limit = 500
 
 init()
 

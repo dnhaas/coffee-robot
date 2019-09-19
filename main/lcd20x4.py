@@ -6,6 +6,10 @@ import smbus
 import time
 import datetime
 import subprocess
+import odrive
+
+global my_drive
+my_drive = odrive.find_any()
 
 I2C_ADDR  = 0x27 # I2C device address
 LCD_WIDTH = 20   # Maximum characters per line
@@ -32,17 +36,7 @@ bus = smbus.SMBus(1) # Rev 2 Pi uses 1
 def run_cmd(cmd):
     return subprocess.check_output(cmd, shell=True).decode('utf-8')
 
-def get_my_ipwlan():
-    val = run_cmd("/sbin/ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'")[:-1]
-    if val == "":
-        val = "No connection!"
-    return val
 
-def get_my_ipeth():
-    val = run_cmd("/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'")[:-1]
-    if val == "":
-        val = "No connection"
-    return val
 
 def lcd_init():
   lcd_byte(0x33,LCD_CMD) # 110011 Initialise
@@ -86,13 +80,11 @@ def main():
 
   while True:
 
-    now = datetime.datetime.now()
-
     lcd_string("MTA Coffee-robot",LCD_LINE_1)
-    lcd_string("Battery = ??V",LCD_LINE_2)
+    lcd_string(("Battery " + str(my_drive.vbus_voltage) + "V"),LCD_LINE_2)
     lcd_string("Odrive: No errors",LCD_LINE_3)
     lcd_string("Pozyx: X 100 Y 100",LCD_LINE_4)
-    time.sleep(60)
+    time.sleep(1)
 
 if __name__ == '__main__':
 
