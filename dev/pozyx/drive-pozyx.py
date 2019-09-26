@@ -402,9 +402,9 @@ try:
                                     print('Left',angleError)
 
                             else:
-                            # drive forward
-                            stop_motors()
-                            print('Drive forward: ',targetDistance)
+                                # drive forward
+                                stop_motors()
+                                print('Drive forward: ',targetDistance)
                         else:
                             # position reached
                             stop_motors()
