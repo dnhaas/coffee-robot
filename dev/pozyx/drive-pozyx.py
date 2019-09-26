@@ -263,6 +263,7 @@ class ReadyToLocalize(object):
 
         measurement = 0
         numberOfMeasurements = 15
+		pozyxFailCount = 0
 
         while (measurement < numberOfMeasurements):
             status = self.pozyx.doPositioning(
@@ -273,8 +274,9 @@ class ReadyToLocalize(object):
                 totalPosition.z = totalPosition.z + position.z
                 measurement = measurement + 1                    
             else:
-                """self.printPublishErrorCode("positioning")"""
+                pozyxFailCount = pozyxFailCount + 1
 
+        print("Failed Pozyx measurements: ",pozyxFailCount)
         totalPosition.x = totalPosition.x / numberOfMeasurements
         totalPosition.y = totalPosition.y / numberOfMeasurements
         totalPosition.z = totalPosition.z / numberOfMeasurements
