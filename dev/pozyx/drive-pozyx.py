@@ -382,10 +382,10 @@ try:
                             angleError = 360 + angleError
 
                 # drive forward
-                print('Drive forward')
+                print('Drive forward: ',targetDistance)
             else:
                 # position reached
-                print('Position reached')
+                print('Position reached [dis: ',targetDistance,'; ang: ',targetAngle,']')
 
 except RobotStopException:
     # This exception will be raised when the home button is pressed, at which point we should
