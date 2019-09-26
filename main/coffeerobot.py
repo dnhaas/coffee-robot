@@ -98,7 +98,7 @@ try:
     def stop_motors():
         # Turn both motors off
         my_drive.axis0.controller.vel_setpoint = 0
-        my_drive.axis0.controller.vel_setpoint = 0
+        my_drive.axis1.controller.vel_setpoint = 0
 
 except ImportError:
 
