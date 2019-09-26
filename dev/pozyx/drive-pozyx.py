@@ -396,16 +396,16 @@ try:
                             if abs(angleError) > angleAccuracy:
                                 if angleError > 0:
                                     # turn right
-                                    set_speeds(1000,-1000)
+                                    set_speeds(targetDistance,-targetDistance)
                                     print('Right',angleError)
                                 else:
                                     # turn left
-                                    set_speeds(-1000,1000)
+                                    set_speeds(-targetDistance,targetDistance)
                                     print('Left',angleError)
 
                             else:
                                 # drive forward
-                                set_speeds(1000,1000)
+                                set_speeds(1.5 * targetDistance,1.5 * targetDistance)
                                 print('Drive forward: ',targetDistance)
                         else:
                             # position reached
