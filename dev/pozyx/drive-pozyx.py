@@ -263,7 +263,7 @@ class ReadyToLocalize(object):
 
         measurement = 0
         numberOfMeasurements = 15
-		pozyxFailCount = 0
+        pozyxFailCount = 0
 
         while (measurement < numberOfMeasurements):
             status = self.pozyx.doPositioning(
