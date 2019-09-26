@@ -411,7 +411,8 @@ try:
                             # position reached
                             stop_motors()
                             print('Position reached [dis: ',targetDistance,'; ang: ',targetAngle,']')
-
+                    
+                    stop_motors()
             except IOError:
                 # We get an IOError when using the ControllerResource if we don't have a controller yet,
                 # so in this case we just wait a second and try again after printing a message.
