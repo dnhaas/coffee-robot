@@ -13,6 +13,8 @@ from pypozyx.tools.version_check import perform_latest_version_check
 import odrive
 from odrive.enums import *
 
+from fibre import protocol
+
 import time
 import math
 
@@ -394,11 +396,11 @@ try:
                             if abs(angleError) > angleAccuracy:
                                 if angleError > 0:
                                     # turn right
-                                    set_speeds(-1000,1000)
+                                    set_speeds(1000,-1000)
                                     print('Right',angleError)
                                 else:
                                     # turn left
-                                    set_speeds(1000,-1000)
+                                    set_speeds(-1000,1000)
                                     print('Left',angleError)
 
                             else:
