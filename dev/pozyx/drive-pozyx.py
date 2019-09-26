@@ -355,7 +355,7 @@ try:
         targetPosition = Coordinates(3000,3000,0)
 
         # DESIRED ACCURACY
-        distanceAccuracy = 500
+        distanceAccuracy = 300
         angleAccuracy = 10
 
         while True:
@@ -398,16 +398,16 @@ try:
                             if abs(angleError) > angleAccuracy:
                                 if angleError > 0:
                                     # turn right
-                                    set_speeds(0.75 * targetDistance,-0.75 * targetDistance)
+                                    set_speeds(targetDistance,targetDistance)
                                     print('Right',angleError,'Target',targetAngle,'Current',currentAngle)
                                 else:
                                     # turn left
-                                    set_speeds(-0.75 * targetDistance,0.75 * targetDistance)
+                                    set_speeds(targetDistance,targetDistance)
                                     print('Left',angleError,'Target',targetAngle,'Current',currentAngle)
 
                             else:
                                 # drive forward
-                                set_speeds(1.5 * targetDistance,1.5 * targetDistance)
+                                set_speeds(2 * targetDistance,2 * targetDistance)
                                 print('Drive forward: ',targetDistance)
                         else:
                             # position reached
