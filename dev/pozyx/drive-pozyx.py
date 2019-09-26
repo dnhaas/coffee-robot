@@ -398,11 +398,11 @@ try:
                             if abs(angleError) > angleAccuracy:
                                 if angleError > 0:
                                     # turn right
-                                    set_speeds(targetDistance,-targetDistance)
+                                    set_speeds(0.5 * targetDistance,-0.5 * targetDistance)
                                     print('Right',angleError)
                                 else:
                                     # turn left
-                                    set_speeds(-targetDistance,targetDistance)
+                                    set_speeds(-0.5 * targetDistance,0.5 * targetDistance)
                                     print('Left',angleError)
 
                             else:
