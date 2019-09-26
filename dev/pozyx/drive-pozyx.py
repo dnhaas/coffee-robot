@@ -16,30 +16,36 @@ from odrive.enums import *
 import time
 import math
 
-# Find a connected ODrive (this will block until you connect one)
-print("finding an odrive...")
-"""my_drive = odrive.find_any()
+def init():
+    # Find a connected ODrive (this will block until you connect one)
+    print("finding an odrive...")
+    global my_drive
+    my_drive = odrive.find_any()
 
-# To read a value, simply read the property
-print("Odrive found, Shit is running at " + str(my_drive.vbus_voltage) + "V")
 
-my_drive.axis0.controller.config.pos_gain = 1
-print("axis 0 pos_gain is " + str(my_drive.axis0.controller.config.pos_gain))
-my_drive.axis1.controller.config.pos_gain = 1
-print("axis 1 pos_gain is " + str(my_drive.axis1.controller.config.pos_gain))
+    # To read a value, simply read the property
+    print("Odrive found, Shit is running at " + str(my_drive.vbus_voltage) + "V")
 
-my_drive.axis0.controller.config.vel_gain = 0.25 #0.02
-print("axis 0 vel_gain is " + str(my_drive.axis0.controller.config.vel_gain))
-my_drive.axis1.controller.config.vel_gain = 0.25 #0.02
-print("axis 1 vel_gain is " + str(my_drive.axis1.controller.config.vel_gain))
+    my_drive.axis0.controller.config.pos_gain = 1
+    print("axis 0 pos_gain is " + str(my_drive.axis0.controller.config.pos_gain))
+    my_drive.axis1.controller.config.pos_gain = 1
+    print("axis 1 pos_gain is " + str(my_drive.axis1.controller.config.pos_gain))
 
-my_drive.axis0.controller.config.vel_integrator_gain = 1
-print("axis 0 vel_integrator_gain is " + str(my_drive.axis0.controller.config.vel_integrator_gain))
-my_drive.axis1.controller.config.vel_integrator_gain = 1
-print("axis 1 vel_integrator_gain is " + str(my_drive.axis1.controller.config.vel_integrator_gain))
+    my_drive.axis0.controller.config.vel_gain = 0.25 #0.02
+    print("axis 0 vel_gain is " + str(my_drive.axis0.controller.config.vel_gain))
+    my_drive.axis1.controller.config.vel_gain = 0.25 #0.02
+    print("axis 1 vel_gain is " + str(my_drive.axis1.controller.config.vel_gain))
 
-my_drive.axis0.controller.config.vel_limit = 7500
-my_drive.axis1.controller.config.vel_limit = 7500"""
+    my_drive.axis0.controller.config.vel_integrator_gain = 1
+    print("axis 0 vel_integrator_gain is " + str(my_drive.axis0.controller.config.vel_integrator_gain))
+    my_drive.axis1.controller.config.vel_integrator_gain = 1
+    print("axis 1 vel_integrator_gain is " + str(my_drive.axis1.controller.config.vel_integrator_gain))
+
+
+    my_drive.axis0.controller.config.vel_limit = 500
+    my_drive.axis1.controller.config.vel_limit = 500
+
+init()
 
 try:
     # Attempt to import the GPIO Zero library. If this fails, because we're running somewhere
@@ -108,6 +114,9 @@ except ImportError:
         No motor hat, so just print a message.
         """
         print('DEBUG Motors stopping')
+
+# All we need, as we don't care which controller we bind to, is the ControllerResource
+from approxeng.input.selectbinder import ControllerResource
 
 class RobotStopException(Exception):
     """
@@ -291,8 +300,6 @@ class ReadyToLocalize(object):
                     targetAngle = 270
         
         return [targetDistance, targetAngle]
-        
-
 
 try:
     if __name__ == "__main__":
@@ -348,44 +355,66 @@ try:
         angleAccuracy = 15
 
         while True:
-            currentPosition = r.getCurrentPosition()
-            currentAngle = r.getHeading()
+            try:
+                # Bind to any available joystick, this will use whatever's connected as long as the library
+                # supports it.
+                with ControllerResource(dead_zone=0.1, hot_zone=0.2) as joystick:
+                    print('Boojaah!, controller found, press Analog button to stop robot.')
+                    print(joystick.controls)
+                    # Loop until the joystick disconnects, or we deliberately stop by raising a
+                    # RobotStopException
+                    while joystick.connected:
+                        joystick.check_presses()
+                        # Print out any buttons that were pressed, if we had any
+                        if joystick.has_presses:
+                            print(joystick.presses)
+                        # If home was pressed, raise a RobotStopException to bail out of the loop
+                        # Home is the Analog button
+                        if 'home' in joystick.presses:
+                            raise RobotStopException()
+                        if 'start' in joystick.presses:
+                            try:
+                                my_drive.reboot()
+                            except protocol.ChannelBrokenException:
+                                init()
 
-            [targetDistance, targetAngle] = r.getTargetData(currentPosition, targetPosition)
+                        currentPosition = r.getCurrentPosition()
+                        currentAngle = r.getHeading()
 
-            if targetDistance > distanceAccuracy:
-                angleError = targetAngle - currentAngle
-                if angleError > 180:
-                    angleError = 360 - angleError
-                else:
-                    if angleError < -180:
-                        angleError = 360 + angleError
+                        [targetDistance, targetAngle] = r.getTargetData(currentPosition, targetPosition)
 
-                if abs(angleError) > angleAccuracy:
-                    if angleError > 0:
-                        # turn right
-                        print('Right',angleError)
-                    else:
-                        # turn left
-                        print('Left',angleError)
+                        if targetDistance > distanceAccuracy:
+                            angleError = targetAngle - currentAngle
+                            if angleError > 180:
+                                angleError = 360 - angleError
+                            else:
+                                if angleError < -180:
+                                    angleError = 360 + angleError
 
-                    # currentPosition = r.getCurrentPosition()
-                    # currentAngle = r.getHeading()
+                            if abs(angleError) > angleAccuracy:
+                                if angleError > 0:
+                                    # turn right
+                                    set_speeds(-5,5)
+                                    print('Right',angleError)
+                                else:
+                                    # turn left
+                                    set_speeds(5,-5)
+                                    print('Left',angleError)
 
-                    # [targetDistance, targetAngle] = r.getTargetData(currentPosition, targetPosition)
-                    # print('Current:',currentAngle,'Target:',targetAngle)
-                    # angleError = targetAngle - currentAngle
-                    # if angleError > 180:
-                    #    angleError = 360 - angleError
-                    #else:
-                    #    if angleError < -180:
-                    #        angleError = 360 + angleError
+                            else:
+                            # drive forward
+                            stop_motors()
+                            print('Drive forward: ',targetDistance)
+                        else:
+                            # position reached
+                            stop_motors()
+                            print('Position reached [dis: ',targetDistance,'; ang: ',targetAngle,']')
 
-                # drive forward
-                print('Drive forward: ',targetDistance)
-            else:
-                # position reached
-                print('Position reached [dis: ',targetDistance,'; ang: ',targetAngle,']')
+            except IOError:
+                # We get an IOError when using the ControllerResource if we don't have a controller yet,
+                # so in this case we just wait a second and try again after printing a message.
+                print('No controller found yet')
+                sleep(1)
 
 except RobotStopException:
     # This exception will be raised when the home button is pressed, at which point we should
