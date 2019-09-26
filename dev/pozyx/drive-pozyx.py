@@ -399,11 +399,11 @@ try:
                                 if angleError > 0:
                                     # turn right
                                     set_speeds(0.75 * targetDistance,-0.75 * targetDistance)
-                                    print('Right',angleError)
+                                    print('Right',angleError,'Target',targetAngle,'Current',currentAngle)
                                 else:
                                     # turn left
                                     set_speeds(-0.75 * targetDistance,0.75 * targetDistance)
-                                    print('Left',angleError)
+                                    print('Left',angleError,'Target',targetAngle,'Current',currentAngle)
 
                             else:
                                 # drive forward
