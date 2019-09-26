@@ -262,7 +262,7 @@ class ReadyToLocalize(object):
         totalPosition = Coordinates()
 
         measurement = 0
-        numberOfMeasurements = 20
+        numberOfMeasurements = 15
 
         while (measurement < numberOfMeasurements):
             status = self.pozyx.doPositioning(
@@ -353,8 +353,8 @@ try:
         targetPosition = Coordinates(3000,3000,0)
 
         # DESIRED ACCURACY
-        distanceAccuracy = 300
-        angleAccuracy = 15
+        distanceAccuracy = 500
+        angleAccuracy = 10
 
         while True:
             try:
