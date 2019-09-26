@@ -405,7 +405,7 @@ try:
 
                             else:
                                 # drive forward
-                                stop_motors()
+                                set_speeds(1000,1000)
                                 print('Drive forward: ',targetDistance)
                         else:
                             # position reached
