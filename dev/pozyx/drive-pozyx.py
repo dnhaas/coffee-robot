@@ -403,7 +403,7 @@ try:
 
                             else:
                                 # drive forward
-							    stop_motors()
+    						    stop_motors()
                                 print('Drive forward: ',targetDistance)
                         else:
                             # position reached
