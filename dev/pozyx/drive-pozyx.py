@@ -294,14 +294,14 @@ class ReadyToLocalize(object):
         targetAngle = 0
         if positionError.x > 0:
             if positionError.y > 0:
-                targetAngle = 90 - math.degrees(math.atan(positionError.x / positionError.y))
+                targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
             else:
-                targetAngle = 270 - math.degrees(math.atan(positionError.x / positionError.y))
+                targetAngle = 90 + math.degrees(math.atan(positionError.x / positionError.y))
         else:
             if positionError.y > 0:
-                targetAngle = 90 - math.degrees(math.atan(positionError.x / positionError.y))
+                targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
             else:
-                targetAngle = 270 - math.degrees(math.atan(positionError.x / positionError.y))
+                targetAngle = 90 + math.degrees(math.atan(positionError.x / positionError.y))
         
         return [targetDistance, targetAngle]
 
