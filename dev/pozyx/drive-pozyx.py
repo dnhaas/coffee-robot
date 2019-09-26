@@ -361,7 +361,7 @@ try:
                     if angleError < -180:
                         angleError = 360 + angleError
 
-                while abs(angleError) > angleAccuracy:
+                if abs(angleError) > angleAccuracy:
                     if angleError > 0:
                         # turn right
                         print('Right',angleError)
@@ -369,17 +369,17 @@ try:
                         # turn left
                         print('Left',angleError)
 
-                    currentPosition = r.getCurrentPosition()
-                    currentAngle = r.getHeading()
+                    # currentPosition = r.getCurrentPosition()
+                    # currentAngle = r.getHeading()
 
-                    [targetDistance, targetAngle] = r.getTargetData(currentPosition, targetPosition)
-                    print('Current:',currentAngle,'Target:',targetAngle)
-                    angleError = targetAngle - currentAngle
-                    if angleError > 180:
-                        angleError = 360 - angleError
-                    else:
-                        if angleError < -180:
-                            angleError = 360 + angleError
+                    # [targetDistance, targetAngle] = r.getTargetData(currentPosition, targetPosition)
+                    # print('Current:',currentAngle,'Target:',targetAngle)
+                    # angleError = targetAngle - currentAngle
+                    # if angleError > 180:
+                    #    angleError = 360 - angleError
+                    #else:
+                    #    if angleError < -180:
+                    #        angleError = 360 + angleError
 
                 # drive forward
                 print('Drive forward: ',targetDistance)
