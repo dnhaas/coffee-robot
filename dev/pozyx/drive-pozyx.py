@@ -380,6 +380,14 @@ try:
                     else:
                         if angleError < -180:
                             angleError = 360 + angleError
+				
+				# drive forward
+				print('Drive forward')
+			else:
+				# position reached
+				print('Position reached')
+
+				
 
 
 except RobotStopException:
