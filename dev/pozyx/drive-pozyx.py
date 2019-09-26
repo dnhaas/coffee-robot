@@ -293,15 +293,15 @@ class ReadyToLocalize(object):
         
         targetAngle = 0
         if positionError.x > 0:
-            targetAngle = 180 - math.degrees(math.atan(positionError.x / positionError.y))
-        else:
-            if positionError.x < 0:
-                targetAngle = -math.degrees(math.atan(positionError.x / positionError.y))
+            if positionError.y > 0:
+                targetAngle = 90 - math.degrees(math.atan(positionError.x / positionError.y))
             else:
-                if positionError.y > 0:
-                    targetAngle = 90
-                else:
-                    targetAngle = 270
+                targetAngle = 270 - math.degrees(math.atan(positionError.x / positionError.y))
+        else:
+            if positionError.y > 0:
+                targetAngle = 90 - math.degrees(math.atan(positionError.x / positionError.y))
+            else:
+                targetAngle = 270 - math.degrees(math.atan(positionError.x / positionError.y))
         
         return [targetDistance, targetAngle]
 
@@ -398,11 +398,11 @@ try:
                             if abs(angleError) > angleAccuracy:
                                 if angleError > 0:
                                     # turn right
-                                    set_speeds(0.5 * targetDistance,-0.5 * targetDistance)
+                                    set_speeds(0.75 * targetDistance,-0.75 * targetDistance)
                                     print('Right',angleError)
                                 else:
                                     # turn left
-                                    set_speeds(-0.5 * targetDistance,0.5 * targetDistance)
+                                    set_speeds(-0.75 * targetDistance,0.75 * targetDistance)
                                     print('Left',angleError)
 
                             else:
