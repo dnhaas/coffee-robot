@@ -22,7 +22,7 @@ import math
 from collections import deque
 
 # Initialize LED
-led = RGBLED(13,19,26)
+led = RGBLED(6,13,19)
 
 # Set LED to white
 led.color = (1, 1, 1)
