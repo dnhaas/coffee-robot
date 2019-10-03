@@ -3,6 +3,7 @@
 from __future__ import print_function
 from __future__ import division
 
+from gpiozero import RGBLED
 from time import sleep
 
 from pypozyx import (POZYX_POS_ALG_UWB_ONLY, POZYX_3D, Coordinates, EulerAngles, Acceleration, POZYX_SUCCESS, PozyxConstants, version,
@@ -18,7 +19,11 @@ from fibre import protocol
 import time
 import math
 
+led = RGBLED(13,19,26)
+led.color = (1, 1, 1)
+
 def init():
+    led.blink(on_color=(1,1,0), off_color(1,1,1))
     # Find a connected ODrive (this will block until you connect one)
     print("finding an odrive...")
     global my_drive
@@ -358,6 +363,8 @@ try:
         distanceAccuracy = 300
         angleAccuracy = 10
 
+        led.color(1,0,0)
+
         while True:
             try:
                 # Bind to any available joystick, this will use whatever's connected as long as the library
@@ -388,6 +395,7 @@ try:
                         [targetDistance, targetAngle] = r.getTargetData(currentPosition, targetPosition)
 
                         if targetDistance > distanceAccuracy:
+                            led.color(1,0,0)
                             angleError = targetAngle - currentAngle
                             if angleError > 180:
                                 angleError = 360 - angleError
@@ -410,6 +418,7 @@ try:
                                 set_speeds(2 * targetDistance,2 * targetDistance)
                                 print('Drive forward: ',targetDistance)
                         else:
+                            led.color(0,1,0)
                             # position reached
                             stop_motors()
                             print('Position reached [dis: ',targetDistance,'; ang: ',targetAngle,']')
