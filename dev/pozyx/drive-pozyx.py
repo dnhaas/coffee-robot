@@ -24,12 +24,12 @@ from collections import deque
 # Initialize LED
 led = RGBLED(6,13,19)
 
-# Set LED to white
-led.color = (1, 1, 1)
+# Set LED off
+led.color = (0, 0, 0)
 
 def init():
     # Blink LED
-    led.blink(on_color=(1,1,0),off_color=(1,1,1))
+    led.blink(on_color=(1,1,0),off_color=(0,0,0))
 
     # Find a connected ODrive (this will block until you connect one)
     print("finding an odrive...")
