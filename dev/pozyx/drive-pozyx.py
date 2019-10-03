@@ -19,11 +19,16 @@ from fibre import protocol
 import time
 import math
 
+# Initialize LED
 led = RGBLED(13,19,26)
+
+# Set LED to white
 led.color = (1, 1, 1)
 
 def init():
+    # Blink LED
     led.blink(on_color=(1,1,0),off_color=(1,1,1))
+
     # Find a connected ODrive (this will block until you connect one)
     print("finding an odrive...")
     global my_drive
@@ -363,7 +368,8 @@ try:
         distanceAccuracy = 300
         angleAccuracy = 10
 
-        led.color(1,0,0)
+        # set LED color to red
+        led.color = (1,0,0)
 
         while True:
             try:
@@ -395,7 +401,9 @@ try:
                         [targetDistance, targetAngle] = r.getTargetData(currentPosition, targetPosition)
 
                         if targetDistance > distanceAccuracy:
-                            led.color(1,0,0)
+                            # set LED color to red
+                            led.color = (1,0,0)
+
                             angleError = targetAngle - currentAngle
                             if angleError > 180:
                                 angleError = 360 - angleError
@@ -418,7 +426,9 @@ try:
                                 set_speeds(2 * targetDistance,2 * targetDistance)
                                 print('Drive forward: ',targetDistance)
                         else:
-                            led.color(0,1,0)
+                            # set LED color to green
+                            led.color = (0,1,0)
+
                             # position reached
                             stop_motors()
                             print('Position reached [dis: ',targetDistance,'; ang: ',targetAngle,']')
