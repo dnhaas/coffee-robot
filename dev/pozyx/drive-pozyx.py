@@ -22,7 +22,7 @@ import math
 from collections import deque
 
 # Initialize LED
-led = RGBLED(6,13,19)
+led = RGBLED(6,13,19,False)
 
 # Set LED off
 led.color = (0, 0, 0)
@@ -156,27 +156,7 @@ class ReadyToLocalize(object):
         self.totalPositionY = 0
         self.totalPositionZ = 0
 
-        self.numberOfMeasurements = 15
-
-        position = Coordinates()
-        measurement = 0
-
-        while (measurement < self.numberOfMeasurements):
-            status = self.pozyx.doPositioning(
-                position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
-            if status == POZYX_SUCCESS:
-                if (measurement == 0):
-                    self.measurementsX = deque([position.x])
-                    self.measurementsY = deque([position.y])
-                    self.measurementsZ = deque([position.z])
-                else:
-                    self.measurementsX.append(position.x)
-                    self.measurementsY.append(position.y)
-                    self.measurementsZ.append(position.z)
-                self.totalPositionX = self.totalPositionX + self.measurementsX[-1]
-                self.totalPositionY = self.totalPositionY + self.measurementsY[-1]
-                self.totalPositionZ = self.totalPositionZ + self.measurementsZ[-1]
-                measurement = measurement + 1       
+        self.numberOfMeasurements = 15       
 
     def setup(self):
         """Sets up the Pozyx for positioning by calibrating its anchor list."""
@@ -197,6 +177,26 @@ class ReadyToLocalize(object):
 
         self.setAnchorsManual(save_to_flash=False)
         self.printPublishConfigurationResult()
+
+        position = Coordinates()
+        measurement = 0
+
+        while (measurement < self.numberOfMeasurements):
+            status = self.pozyx.doPositioning(
+                position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
+            if status == POZYX_SUCCESS:
+                if (measurement == 0):
+                    self.measurementsX = deque([position.x])
+                    self.measurementsY = deque([position.y])
+                    self.measurementsZ = deque([position.z])
+                else:
+                    self.measurementsX.append(position.x)
+                    self.measurementsY.append(position.y)
+                    self.measurementsZ.append(position.z)
+                self.totalPositionX = self.totalPositionX + self.measurementsX[-1]
+                self.totalPositionY = self.totalPositionY + self.measurementsY[-1]
+                self.totalPositionZ = self.totalPositionZ + self.measurementsZ[-1]
+                measurement = measurement + 1
 
     def printPublishPosition(self, position):
         """Prints the Pozyx's position and possibly sends it as a OSC packet"""
