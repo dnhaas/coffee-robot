@@ -197,7 +197,6 @@ class ReadyToLocalize(object):
                 self.totalPositionY = self.totalPositionY + self.measurementsY[-1]
                 self.totalPositionZ = self.totalPositionZ + self.measurementsZ[-1]
                 measurement = measurement + 1
-            print("Setup STATUS:",status,"Success =",POZYX_SUCCESS)
 
     def printPublishPosition(self, position):
         """Prints the Pozyx's position and possibly sends it as a OSC packet"""
@@ -298,13 +297,10 @@ class ReadyToLocalize(object):
         position = Coordinates()
         totalPosition = Coordinates()
 
-        measurementSuccess = False
-
-        while ~measurementSuccess:
+        status = 0
+        while not status:
             status = self.pozyx.doPositioning(
                 position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
-            if status == POZYX_SUCCESS:
-                measurementSuccess = True
 
         self.totalPositionX = self.totalPositionX - self.measurementsX.popleft() + position.x
         self.totalPositionY = self.totalPositionY - self.measurementsY.popleft() + position.y
