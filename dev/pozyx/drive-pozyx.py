@@ -152,11 +152,14 @@ class ReadyToLocalize(object):
         self.height = height
         self.remote_id = remote_id
 
-        measurement = 0
-        self.numberOfMeasurements = 15
         self.totalPositionX = 0
         self.totalPositionY = 0
         self.totalPositionZ = 0
+
+        self.numberOfMeasurements = 15
+
+        position = Coordinates()
+        measurement = 0
 
         while (measurement < self.numberOfMeasurements):
             status = self.pozyx.doPositioning(
