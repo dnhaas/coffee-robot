@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\dev",
+    "\\dev\\pozyx",
     "\\main"
   ],
-  "SelectedNode": "\\main\\coffeerobot.py",
+  "SelectedNode": "\\dev\\pozyx\\drive-pozyx.py",
   "PreviewInSolutionExplorer": false
 }

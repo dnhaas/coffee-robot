@@ -389,7 +389,7 @@ try:
                             print('New target: O')
                         if 'triangle' in joystick.presses:
                             targetPosition = Coordinates(1500,1500,0)
-                            print('New target: /\')
+                            print('New target: /\\')
                         if 'square' in joystick.presses:
                             targetPosition = Coordinates(3000,2000,0)
                             print('New target: []')
