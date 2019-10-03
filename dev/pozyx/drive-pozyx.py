@@ -308,7 +308,7 @@ class ReadyToLocalize(object):
                 targetAngle = 90 + math.degrees(math.atan(positionError.x / positionError.y))
             else:
                 targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
-        print("CP:",currentPosition,"CA:",currentAngle,"TD:",targetDistance,"TA:",targetAngle,"TP:",targetPosition)
+
         return [targetDistance, targetAngle]
 
 try:
@@ -381,6 +381,18 @@ try:
                         # Print out any buttons that were pressed, if we had any
                         if joystick.has_presses:
                             print(joystick.presses)
+                        if 'cross' in joystick.presses:
+                            targetPosition = Coordinates(3000,3000,0)
+                            print('New target: X')
+                        if 'circle' in joystick.presses:
+                            targetPosition = Coordinates(1000,3000,0)
+                            print('New target: O')
+                        if 'triangle' in joystick.presses:
+                            targetPosition = Coordinates(1500,1500,0)
+                            print('New target: /\')
+                        if 'square' in joystick.presses:
+                            targetPosition = Coordinates(3000,2000,0)
+                            print('New target: []')
                         # If home was pressed, raise a RobotStopException to bail out of the loop
                         # Home is the Analog button
                         if 'home' in joystick.presses:
