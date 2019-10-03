@@ -19,6 +19,8 @@ from fibre import protocol
 import time
 import math
 
+from collections import deque
+
 # Initialize LED
 led = RGBLED(13,19,26)
 
@@ -149,8 +151,29 @@ class ReadyToLocalize(object):
         self.dimension = dimension
         self.height = height
         self.remote_id = remote_id
-        self.measurement = 0
-        self.totalPosition = Coordinates()
+
+        measurement = 0
+        self.numberOfMeasurements = 15
+        self.totalPositionX = 0
+        self.totalPositionY = 0
+        self.totalPositionZ = 0
+
+        while (measurement < self.numberOfMeasurements):
+            status = self.pozyx.doPositioning(
+                position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
+            if status == POZYX_SUCCESS:
+                if (measurement == 0):
+                    self.measurementsX = deque([position.x])
+                    self.measurementsY = deque([position.y])
+                    self.measurementsZ = deque([position.z])
+                else:
+                    self.measurementsX.append(position.x)
+                    self.measurementsY.append(position.y)
+                    self.measurementsZ.append(position.z)
+                self.totalPositionX = self.totalPositionX + self.measurementsX[-1]
+                self.totalPositionY = self.totalPositionY + self.measurementsY[-1]
+                self.totalPositionZ = self.totalPositionZ + self.measurementsZ[-1]
+                measurement = measurement + 1       
 
     def setup(self):
         """Sets up the Pozyx for positioning by calibrating its anchor list."""
@@ -271,23 +294,47 @@ class ReadyToLocalize(object):
         position = Coordinates()
         totalPosition = Coordinates()
 
-        measurement = 0
-        numberOfMeasurements = 15
+        measurementSuccess = False
 
-        while (measurement < numberOfMeasurements):
+        while ~measurementSuccess:
             status = self.pozyx.doPositioning(
                 position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
             if status == POZYX_SUCCESS:
-                totalPosition.x = totalPosition.x + position.x
-                totalPosition.y = totalPosition.y + position.y
-                totalPosition.z = totalPosition.z + position.z
-                measurement = measurement + 1                    
+                measurementSuccess = True
 
-        totalPosition.x = totalPosition.x / numberOfMeasurements
-        totalPosition.y = totalPosition.y / numberOfMeasurements
-        totalPosition.z = totalPosition.z / numberOfMeasurements
+        self.totalPositionX = self.totalPositionX - self.measurementsX.popleft() + position.x
+        self.totalPositionY = self.totalPositionY - self.measurementsY.popleft() + position.y
+        self.totalPositionZ = self.totalPositionZ - self.measurementsZ.popleft() + position.z
+        self.measurementsX.append(position.x)
+        self.measurementsY.append(position.y)
+        self.measurementsZ.append(position.z)
+
+        totalPosition.x = self.totalPositionX / self.numberOfMeasurements
+        totalPosition.y = self.totalPositionY / self.numberOfMeasurements
+        totalPosition.z = self.totalPositionZ / self.numberOfMeasurements
 
         return totalPosition
+
+#        position = Coordinates()
+#        totalPosition = Coordinates()
+#
+#        measurement = 0
+#        numberOfMeasurements = 15
+#
+#        while (measurement < numberOfMeasurements):
+#            status = self.pozyx.doPositioning(
+#                position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
+#            if status == POZYX_SUCCESS:
+#                totalPosition.x = totalPosition.x + position.x
+#                totalPosition.y = totalPosition.y + position.y
+#                totalPosition.z = totalPosition.z + position.z
+#                measurement = measurement + 1                    
+#
+#        totalPosition.x = totalPosition.x / numberOfMeasurements
+#        totalPosition.y = totalPosition.y / numberOfMeasurements
+#        totalPosition.z = totalPosition.z / numberOfMeasurements
+#
+#        return totalPosition
 
     def getTargetData(self, currentPosition, targetPosition):
         positionError = Coordinates()
