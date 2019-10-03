@@ -197,6 +197,7 @@ class ReadyToLocalize(object):
                 self.totalPositionY = self.totalPositionY + self.measurementsY[-1]
                 self.totalPositionZ = self.totalPositionZ + self.measurementsZ[-1]
                 measurement = measurement + 1
+            print("Setup STATUS:",status,"Success =",POZYX_SUCCESS)
 
     def printPublishPosition(self, position):
         """Prints the Pozyx's position and possibly sends it as a OSC packet"""
