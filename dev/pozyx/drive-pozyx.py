@@ -273,7 +273,6 @@ class ReadyToLocalize(object):
 
         measurement = 0
         numberOfMeasurements = 15
-        pozyxFailCount = 0
 
         while (measurement < numberOfMeasurements):
             status = self.pozyx.doPositioning(
@@ -283,10 +282,7 @@ class ReadyToLocalize(object):
                 totalPosition.y = totalPosition.y + position.y
                 totalPosition.z = totalPosition.z + position.z
                 measurement = measurement + 1                    
-            else:
-                pozyxFailCount = pozyxFailCount + 1
 
-        print("Failed Pozyx measurements: ",pozyxFailCount)
         totalPosition.x = totalPosition.x / numberOfMeasurements
         totalPosition.y = totalPosition.y / numberOfMeasurements
         totalPosition.z = totalPosition.z / numberOfMeasurements
@@ -312,7 +308,7 @@ class ReadyToLocalize(object):
                 targetAngle = 90 + math.degrees(math.atan(positionError.x / positionError.y))
             else:
                 targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
-        
+        print("CP:",currentPosition,"CA:",currentAngle,"TD:",targetDistance,"TA:",targetAngle,"TP:",targetPosition)
         return [targetDistance, targetAngle]
 
 try:
