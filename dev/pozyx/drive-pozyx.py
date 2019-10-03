@@ -23,7 +23,7 @@ led = RGBLED(13,19,26)
 led.color = (1, 1, 1)
 
 def init():
-    led.blink(on_color=(1,1,0), off_color(1,1,1))
+    led.blink(on_color=(1,1,0),off_color(1,1,1))
     # Find a connected ODrive (this will block until you connect one)
     print("finding an odrive...")
     global my_drive
