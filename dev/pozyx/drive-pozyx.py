@@ -315,27 +315,6 @@ class ReadyToLocalize(object):
 
         return totalPosition
 
-#        position = Coordinates()
-#        totalPosition = Coordinates()
-#
-#        measurement = 0
-#        numberOfMeasurements = 15
-#
-#        while (measurement < numberOfMeasurements):
-#            status = self.pozyx.doPositioning(
-#                position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
-#            if status == POZYX_SUCCESS:
-#                totalPosition.x = totalPosition.x + position.x
-#                totalPosition.y = totalPosition.y + position.y
-#                totalPosition.z = totalPosition.z + position.z
-#                measurement = measurement + 1                    
-#
-#        totalPosition.x = totalPosition.x / numberOfMeasurements
-#        totalPosition.y = totalPosition.y / numberOfMeasurements
-#        totalPosition.z = totalPosition.z / numberOfMeasurements
-#
-#        return totalPosition
-
     def getTargetData(self, currentPosition, targetPosition):
         positionError = Coordinates()
 
@@ -349,12 +328,18 @@ class ReadyToLocalize(object):
             if positionError.y > 0:
                 targetAngle = 90 + math.degrees(math.atan(positionError.x / positionError.y))
             else:
-                targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
+                if positionError.y == 0:
+                    targetAngle = 0
+                else:
+                    targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
         else:
             if positionError.y > 0:
                 targetAngle = 90 + math.degrees(math.atan(positionError.x / positionError.y))
             else:
-                targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
+                if positionError.y == 0:
+                    targetAngle = 180
+                else:
+                    targetAngle = 270 + math.degrees(math.atan(positionError.x / positionError.y))
 
         return [targetDistance, targetAngle]
 
