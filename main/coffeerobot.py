@@ -97,7 +97,7 @@ try:
             led.color = (0,0,0)
         else:
             # set LED color to yellow
-            led.blink(on_color=(1,1,0),off_color=(0,0,0))
+            led.color = (1,1,0)
 
         # If one wants to see the 'raw' 0-100 values coming in
         # print("source left: {}".format(power_left))
