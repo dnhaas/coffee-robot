@@ -22,8 +22,8 @@ led.color = (0, 0, 0)
 
 
 def init():
-    # Blink LED
-    led.blink(on_color=(1,1,0),off_color=(0,0,0))
+    # Blink LED red
+    led.blink(on_color=(1,0,0),off_color=(0,0,0))
         
     # Find a connected ODrive (this will block until you connect one)
     print("finding an odrive...")
@@ -93,11 +93,11 @@ try:
             # set LED color to white
             led.color = (1,1,1)
         elif power_left == 0 and power_right == 0:
-            # set LED color to red
-            led.color = (1,0,0)
+            # set LED color to none
+            led.color = (0,0,0)
         else:
-            # set LED color to blue
-            led.color = (0,0,1) 
+            # set LED color to yellow
+            led.blink(on_color=(1,1,0),off_color=(0,0,0))
 
         # If one wants to see the 'raw' 0-100 values coming in
         # print("source left: {}".format(power_left))
