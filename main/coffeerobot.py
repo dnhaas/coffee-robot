@@ -86,14 +86,6 @@ try:
             Power to send to right motor, will be inverted to reflect chassis layout
         """
 
-        # If one wants to see the 'raw' 0-100 values coming in
-        # print("source left: {}".format(power_left))
-        # print("source right: {}".format(power_right))
-
-        # Take the 0-100 inputs down to 0-1 and reverse them if necessary
-        power_left = (motor_multiplierL * power_left) / 100
-        power_right = (motor_multiplierR * power_right) / 100
-
         if power_left > 0 and power_right > 0:
             # set LED color to green
             led.color = (0,1,0)
@@ -106,6 +98,15 @@ try:
         else:
             # set LED color to blue
             led.color = (0,0,1) 
+
+        # If one wants to see the 'raw' 0-100 values coming in
+        # print("source left: {}".format(power_left))
+        # print("source right: {}".format(power_right))
+
+        # Take the 0-100 inputs down to 0-1 and reverse them if necessary
+        power_left = (motor_multiplierL * power_left) / 100
+        power_right = (motor_multiplierR * power_right) / 100
+
         # Print the converted values out for debug
         # print("left: {}".format(power_left))
         # print("right: {}".format(power_right))
