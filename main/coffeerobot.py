@@ -6,6 +6,7 @@ MTA Coffee-robot drive with joystick program
 from __future__ import print_function
 from __future__ import division
 
+from gpiozero import RGBLED
 from time import sleep
 import odrive
 from odrive.enums import *
@@ -13,10 +14,17 @@ import time
 import math
 from fibre import protocol
 
+# Initialize LED
+led = RGBLED(6,13,19,False)
 
+# Set LED off
+led.color = (0, 0, 0)
 
 
 def init():
+    # Blink LED
+    led.blink(on_color=(1,1,0),off_color=(0,0,0))
+        
     # Find a connected ODrive (this will block until you connect one)
     print("finding an odrive...")
     global my_drive
@@ -86,6 +94,18 @@ try:
         power_left = (motor_multiplierL * power_left) / 100
         power_right = (motor_multiplierR * power_right) / 100
 
+        if power_left > 0 and power_right > 0:
+            # set LED color to green
+            led.color = (0,1,0)
+        elif power_left < 0 and power_right < 0:
+            # set LED color to white
+            led.color = (1,1,1)
+        elif power_left == 0 and power_right == 0:
+            # set LED color to red
+            led.color = (1,0,0)
+        else:
+            # set LED color to blue
+            led.color = (0,0,1) 
         # Print the converted values out for debug
         # print("left: {}".format(power_left))
         # print("right: {}".format(power_right))
@@ -157,6 +177,9 @@ def mixer(yaw, throttle, max_power=20000):
 # Outer try / except catches the RobotStopException we just defined, which we'll raise when we want to
 # bail out of the loop cleanly, shutting the motors down. We can raise this in response to a button press
 try:
+    # set LED color to red
+    led.color = (1,0,0)
+
     while True:
         # Inner try / except is used to wait for a controller to become available, at which point we
         # bind to it and enter a loop where we read axis values and send commands to the motors.
